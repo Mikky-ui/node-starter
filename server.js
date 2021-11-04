@@ -43,6 +43,11 @@ app.post('/api/post-message', function(req,res) {
     query.postAMessage(db,req,res);
 });
 
+app.put('/api/update-time', function(req,res) {
+    console.log("This is the req",req.body);
+    query.updateTime(db,req,res);
+});
+
 app.listen(3000, function () {
     dba.init(db);
     console.log('Server is listening on port 3000. Ready to accept requests!');

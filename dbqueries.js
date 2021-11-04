@@ -5,10 +5,14 @@ let { updateSJobs } = require('./sql/updateSJobs');
 let { deleteOldMessages } = require('./sql/deleteOldMessages');
 let { archiveSteve } = require('./sql/archiveSteveJobs');
 let { postMessage } = require('./sql/postMessage');
+let { updateTime } = require('./sql/updateTimeUser');
 
 // Task D13
 function getAllMessages(db, req, res) {
-    db.all(`write your query here`, (err, rows) => {
+    db.all(`SELECT Users.friendlyname, Messages.message, datetime(Messages.created,'unixepoch')
+FROM Messages 
+INNER JOIN Users
+ON Messages.userid = Users.userid;`, (err, rows) => {
         if (err) {
             console.error(err.message);
         }
@@ -33,7 +37,7 @@ function organiseUsers(db, req, res) {
 // Task D12
 function createUser(db, req, res) {
     const { username, email, password } = req.body;
-    db.run(`write your query here`, [username, email, password],
+    db.run(`INSERT INTO Users (friendlyname, emailaddress, password) VALUES (?,?,?);`, [username, email, password],
       function(err) {
         if (err) {
           return console.log(err.message)
@@ -98,7 +102,19 @@ function postAMessage(db, req, res) {
     }
         const messg = `${userid} posted this ${message}`;
         res.send({ "ok":messg }).status(200);
-    })
+    });
 }
 
-module.exports = { getAllMessages, organiseUsers, createUser, getFromFranklins, updateSteveJobs, deleteOldMess, archiveJobs, postAMessage }
+function updateTime(db, req, res) {
+    const { userid } = req.body;
+    db.run(updateTimeUser, [userid],
+      function(err) {
+        if (err) {
+          return console.log(err.message)
+    }
+        const messg = `${userid} updated`;
+        res.send({ "ok":messg }).status(200);
+    });
+}
+
+module.exports = { getAllMessages, organiseUsers, createUser, getFromFranklins, updateSteveJobs, deleteOldMess, archiveJobs, postAMessage, updateTime}

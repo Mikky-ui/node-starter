@@ -5,7 +5,13 @@
 // Repeat the setup for “CURRENT_TIMESTAMP” as outlined in the previous requirement.
 
 const createMessages = `
-
-
+CREATE TABLE IF NOT EXISTS Messages (
+  id INTEGER PRIMARY KEY NOT NULL,
+  userid INTEGER,
+  message TEXT NOT NULL,
+  created INTEGER DEFAULT (strftime('%s','now')),
+  archive INTEGER(1) NOT NULL DEFAULT 0 CHECK(archive = 0 OR archive = 1),
+  FOREIGN KEY (userid) REFERENCES Users(userid) ON DELETE CASCADE
+);
 `
 module.exports = { createMessages };

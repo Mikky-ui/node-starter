@@ -100,6 +100,17 @@
         <input type="submit" value="Post a message">
     </form>
     <div id="show added message"></div>
+    
+    <hr>
+
+    <!-- D15. Update a specific users timestamp -->
+    <h2>D15 task. Update specific users timestamp</h2>
+    <form id="update-user-time-form">
+        <label for="userid">User id:</label>
+        <input type="text" id="userid" name="userid"><br>
+        <input type="submit" value="Update timestamp">
+    </form>
+    <div id="show updated timestamp"></div>
 
     <script>
         const buttongetAllMessages = document.querySelector('.getting-messages-form');
@@ -244,8 +255,23 @@
             .then(res => console.log("here is res", res))
             .catch((err) => console.log("error goes here",err));
     }); 
+  
+    const formUpdateTime = document.getElementById("update-user-time-form");
+    formUpdateTime.addEventListener('submit', event => {
+            const userid = document.getElementById('userid').value;
+            event.preventDefault();
+            let body = JSON.stringify({ userid });
+            fetch("/api/update-time", {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body,
+                credentials: 'same-origin'
+            }).then(res => res.json())
+            .then(res => console.log("here is res", res))
+            .catch((err) => console.log("error goes here",err));
+    }); 
 
-
+  
     </script>
 
 </body>

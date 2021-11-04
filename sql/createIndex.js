@@ -4,6 +4,8 @@
 // referencing ‘friendlyname’ called ‘friendlyname_idx’. 
 
 const createIndex = `
+CREATE INDEX friendlyname_idx
+ON Users(friendlyname);
 `;
 
 module.exports = { createIndex };
