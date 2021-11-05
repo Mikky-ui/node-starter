@@ -7,23 +7,21 @@
 
 const insertUsers = `
 INSERT INTO Users
-(userid, friendlyname, emailaddress, admin) VALUES
-    (1001,'Anne Frank','anne@ada.ac.uk',0),
-    (1002,'Aristotle','aristotle@ada.ac.uk',0),
-    (1003,'Benjamin Franklin','benjamin@ada.ac.uk',0),
-    (1004,'Confucius','confucius@ada.ac.uk',0),
-    (1005,'Eleanor Roosevelt','eleanor@ada.ac.uk',0),
-    (1006,'Franklin D. Roosevelt','franklin@ada.ac.uk',0),
-    (1008,'Mark Twain','mark@ada.ac.uk',0),
-    (1010,'Socrates','socrates@ada.ac.uk',0),
-    (1012,'Thomas A. Edison','tom@ada.ac.uk',0),
-    (1013,'Thomas Jefferson','thomas@ada.ac.uk',0),
-    (1000,'Abraham Lincoln','abraham@ada.ac.uk',1),
-    (1007,'Kamala Harris','kamala@ada.ac.uk',1),
-    (1009,'Oprah Winfrey','oprah@ada.ac.uk',1),
-    (1011,'Steve Jobs','steve@ada.ac.uk',1),
-    (1014,'Alexei Navalny','alexei@ada.ac.uk',1);
-
-UPDATE Users SET lastlogin = 0;
+(userid, friendlyname, emailaddress, admin, lastlogin) VALUES
+    (1001,'Anne Frank','anne@ada.ac.uk',0, 0),
+    (1002,'Aristotle','aristotle@ada.ac.uk',0, 0),
+    (1003,'Benjamin Franklin','benjamin@ada.ac.uk',0, 0),
+    (1004,'Confucius','confucius@ada.ac.uk',0, 0),
+    (1005,'Eleanor Roosevelt','eleanor@ada.ac.uk',0, 0),
+    (1006,'Franklin D. Roosevelt','franklin@ada.ac.uk',0,0),
+    (1008,'Mark Twain','mark@ada.ac.uk',0,0),
+    (1010,'Socrates','socrates@ada.ac.uk',0,0),
+    (1012,'Thomas A. Edison','tom@ada.ac.uk',0,0),
+    (1013,'Thomas Jefferson','thomas@ada.ac.uk',0,0),
+    (1000,'Abraham Lincoln','abraham@ada.ac.uk',1,0),
+    (1007,'Kamala Harris','kamala@ada.ac.uk',1,0),
+    (1009,'Oprah Winfrey','oprah@ada.ac.uk',1,0),
+    (1011,'Steve Jobs','steve@ada.ac.uk',1,0),
+    (1014,'Alexei Navalny','alexei@ada.ac.uk',1,0);
 `
 module.exports = { insertUsers };

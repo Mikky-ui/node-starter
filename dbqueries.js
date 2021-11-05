@@ -5,11 +5,12 @@ let { updateSJobs } = require('./sql/updateSJobs');
 let { deleteOldMessages } = require('./sql/deleteOldMessages');
 let { archiveSteve } = require('./sql/archiveSteveJobs');
 let { postMessage } = require('./sql/postMessage');
-let { updateTime } = require('./sql/updateTimeUser');
+let { updateTimeAny } = require('./sql/updateTime');
+let { deleteSpecificMessageUser } = require('./sql/deleteSpecificMessageUser');
 
 // Task D13
 function getAllMessages(db, req, res) {
-    db.all(`SELECT Users.friendlyname, Messages.message, datetime(Messages.created,'unixepoch')
+    db.all(`SELECT Users.friendlyname, Messages.message, datetime(Messages.created,'unixepoch') AS date
 FROM Messages 
 INNER JOIN Users
 ON Messages.userid = Users.userid;`, (err, rows) => {
@@ -106,6 +107,30 @@ function postAMessage(db, req, res) {
 }
 
 function updateTime(db, req, res) {
+    const{ userid } = req.body;
+    db.run(updateTimeAny, [userid],
+        function(err) {
+            if (err) {
+                return console.log(err.message)
+            }
+            const messg = `${userid} updated time of login`;
+            res.send({"ok":messg}).status(200);
+        });
+}
+
+function deleteSpecificMessage(db, req, res) {
+    const{ userid, messageid } = req.body;
+    db.run(deleteSpecificMessageUser, [userid, messageid],
+        function(err) {
+            if (err) {
+                return console.log(err.message)
+            }
+            const messg = `${userid} deleted ${messageid}`;
+            res.send({"ok":messg}).status(200);
+        });
+}
+
+/*function updateTime(db, req, res) {
     const { userid } = req.body;
     db.run(updateTimeUser, [userid],
       function(err) {
@@ -115,6 +140,6 @@ function updateTime(db, req, res) {
         const messg = `${userid} updated`;
         res.send({ "ok":messg }).status(200);
     });
-}
+}*/
 
-module.exports = { getAllMessages, organiseUsers, createUser, getFromFranklins, updateSteveJobs, deleteOldMess, archiveJobs, postAMessage, updateTime}
+module.exports = { getAllMessages, organiseUsers, createUser, getFromFranklins, updateSteveJobs, deleteOldMess, archiveJobs, postAMessage, updateTime, deleteSpecificMessage}

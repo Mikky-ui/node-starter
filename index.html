@@ -105,12 +105,23 @@
 
     <!-- D15. Update a specific users timestamp -->
     <h2>D15 task. Update specific users timestamp</h2>
-    <form id="update-user-time-form">
+    <form id="update-time-form">
         <label for="userid">User id:</label>
-        <input type="text" id="userid" name="userid"><br>
+        <input type="text" id="login" name="userid"><br>
         <input type="submit" value="Update timestamp">
     </form>
-    <div id="show updated timestamp"></div>
+    <div id="updated-timestamp"></div>
+
+    <!-- D16. Delete specific message, specific user -->
+    <h2>D16 task. Delete specific message, specific user</h2>
+    <form id="delete-specific-message-form">
+        <label for="userid">User id:</label>
+        <input type="text" id="messageuser" name="userid"><br>
+        <label for="messsageid">Message id:</label>
+        <input type="text" id="specificmessage" name="messageid"><br>
+        <input type="submit" value="Delete Message">
+    </form>
+    <div id="show-specific-message-deleted"></div>
 
     <script>
         const buttongetAllMessages = document.querySelector('.getting-messages-form');
@@ -128,8 +139,8 @@
                     container.appendChild(ol);
                     res.forEach(item => {
                         const li = document.createElement('li');
-                        const { message } = item;
-                        li.appendChild(document.createTextNode(message));
+                        const { message, friendlyname, date} = item;
+                        li.appendChild(document.createTextNode(message + " " + friendlyname + " " + date));
                         ol.appendChild(li);
                 });
             });
@@ -255,8 +266,39 @@
             .then(res => console.log("here is res", res))
             .catch((err) => console.log("error goes here",err));
     }); 
+
+    const UpdateTime = document.getElementById('update-time-form');
+    UpdateTime.addEventListener('submit', event => {
+        const userid = document.getElementById('login').value;
+        event.preventDefault();
+        let body = JSON.stringify({userid});
+        fetch("/api/update-time", {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            credentials: 'same-origin'
+        }).then(res => res.json())
+        .then(res => document.getElementById('updated-timestamp').innerText=JSON.stringify(res.ok))
+        .catch((err) => console.log("error goes here", err));
+    });
+
+    const DeleteSpecificMessage = document.getElementById('delete-specific-message-form');
+    DeleteSpecificMessage.addEventListener('submit', event => {
+        const userid = document.getElementById('messageuser').value;
+        const messageid = document.getElementById('specificmessage').value;
+        event.preventDefault();
+        let body = JSON.stringify({userid, messageid});
+        fetch("/api/delete-specific-messages", {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            credentials: 'same-origin'
+        }).then(res => res.json())
+        .then(res => document.getElementById('show-specific-message-deleted').innerText=JSON.stringify(res.ok))
+        .catch((err) => console.log("error goes here", err));
+    });
   
-    const formUpdateTime = document.getElementById("update-user-time-form");
+    /*const formUpdateTime = document.getElementById("update-user-time-form");
     formUpdateTime.addEventListener('submit', event => {
             const userid = document.getElementById('userid').value;
             event.preventDefault();
@@ -269,7 +311,7 @@
             }).then(res => res.json())
             .then(res => console.log("here is res", res))
             .catch((err) => console.log("error goes here",err));
-    }); 
+    });*/ 
 
   
     </script>
