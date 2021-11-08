@@ -7,6 +7,42 @@ let { archiveSteve } = require('./sql/archiveSteveJobs');
 let { postMessage } = require('./sql/postMessage');
 let { updateTimeAny } = require('./sql/updateTime');
 let { deleteSpecificMessageUser } = require('./sql/deleteSpecificMessageUser');
+let { addRating } = require('./sql/addRating');
+let { specMessagesRatings } = require('./sql/specMessagesRatings');
+
+function getSpecMessagesRatings(db, req, res) {
+    console.log('req',req.query);
+    const messageRequest = req.query;
+    console.log('value', messageRequest.id);
+    db.all(specMessagesRatings, [messageRequest.id],
+    (err, rows) => {
+        if (err) {
+            console.error(err.message);
+        }
+        if (!rows) {
+            res.send({ error: "no messages found"})
+       } else {
+        res.send(rows);
+        }
+    })
+}
+
+function getAllMessagesRatings(db, req, res) {
+    db.all(`SELECT m.message AS message, u.friendlyname AS friendlyname, r.rating AS rating
+    FROM Ratings AS r
+    INNER JOIN Messages AS m
+    ON r.messageid = m.id
+    INNER JOIN Users AS u
+    ON r.userid = u.userid;`, (err, rows) => {
+        if (err) {
+            console.error(err.message);
+        }
+        if (!rows) {
+            res.send({ error: "no messages found" })
+        }
+        res.send(rows);
+    })
+}
 
 // Task D13
 function getAllMessages(db, req, res) {
@@ -130,6 +166,18 @@ function deleteSpecificMessage(db, req, res) {
         });
 }
 
+function addMessageRating(db, req, res) {
+    const{ userid , messageid, rating } = req.body;
+    db.run(addRating, [userid, messageid, rating],
+        function(err) {
+            if (err) {
+                return console.log(err.message)
+            }
+            const messg = `${userid} gave rating ${rating} to ${messageid}`;
+            res.send({"ok":messg}).status(200);
+        });
+}
+
 /*function updateTime(db, req, res) {
     const { userid } = req.body;
     db.run(updateTimeUser, [userid],
@@ -142,4 +190,4 @@ function deleteSpecificMessage(db, req, res) {
     });
 }*/
 
-module.exports = { getAllMessages, organiseUsers, createUser, getFromFranklins, updateSteveJobs, deleteOldMess, archiveJobs, postAMessage, updateTime, deleteSpecificMessage}
+module.exports = { getAllMessages, organiseUsers, createUser, getFromFranklins, updateSteveJobs, deleteOldMess, archiveJobs, postAMessage, updateTime, deleteSpecificMessage, addMessageRating, getAllMessagesRatings, getSpecMessagesRatings}

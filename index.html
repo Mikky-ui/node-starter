@@ -112,6 +112,8 @@
     </form>
     <div id="updated-timestamp"></div>
 
+    <hr>
+
     <!-- D16. Delete specific message, specific user -->
     <h2>D16 task. Delete specific message, specific user</h2>
     <form id="delete-specific-message-form">
@@ -123,7 +125,92 @@
     </form>
     <div id="show-specific-message-deleted"></div>
 
+    <hr>
+
+    <!-- D17. Add Message Ratings -->
+    <h2>D17 Add Message Ratings</h2>
+    <form id="rating-message-form">
+        <label for="userid">User id:</label>
+        <input type="text" id="userrating" name="userid"><br>
+        <label for="messsageid">Message id:</label>
+        <input type="text" id="ratedmessage" name="messageid"><br>
+        <label for="rating">Rating:</label>
+        <input type="text" id="rategiven" name="rating"><br>
+        <input type="submit" value="Rate the Message">
+    </form>
+    <div id="show-message-rating"></div>
+
+    <hr>
+
+    <!-- D17. Get Message Ratings -->
+    <h2>D17. Get all messages ratings</h2>
+    <form class="getting-messages-ratings">
+        <input type="submit" value="Get All Messages Ratings">
+    </form>
+    <!-- Creates a div element where users will be output -->
+    <div class="messages-ratings-div-shown"></div>
+
+    <hr>
+
+    <h2>D17. Get specific messages ratings</h2>
+    <form class="getting-spec-messages-ratings">
+        <label for="messsageid">Message id:</label>
+        <input type="text" id="rating-for-this-message" name="messageid"><br>
+        <input type="submit" value="Get Ratings for this Message">
+    </form>
+    <!-- Creates a div element where users will be output -->
+    <div class="this-messages-ratings-div-shown"></div>
+
     <script>
+        const getSpecificRatings = document.querySelector('.getting-spec-messages-ratings');
+        getSpecificRatings.addEventListener('submit', event => {
+            const messageid = document.getElementById('rating-for-this-message').value;
+            event.preventDefault();
+            fetch('/api/spec-messages-ratings?id=' +  messageid , {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin'
+            })
+                .then((res)=>res.json())
+                .then(res=> {
+                    console.log(res);
+                    const container = document.querySelector('.this-messages-ratings-div-shown');
+                    const heading = document.createElement("h1");
+                    heading.textContent = "All Ratings for Message";
+                    container.appendChild(heading);
+                    const ol=document.createElement('ol');
+                    container.appendChild(ol);
+                    res.forEach(item => {
+                        const li = document.createElement('li');
+                        const {friendlyname, rating} = item;
+                        li.appendChild(document.createTextNode(friendlyname + " Stars:" + rating));
+                        ol.appendChild(li);
+                });
+            });
+        });
+
+        const getRatings = document.querySelector('.getting-messages-ratings');
+        getRatings.addEventListener('submit', event => {
+            event.preventDefault();
+            fetch('/api/messages-ratings')
+                .then((res)=>res.json())
+                .then(res=> {
+                    console.log(res);
+                    const container = document.querySelector('.messages-ratings-div-shown');
+                    const heading = document.createElement("h1");
+                    heading.textContent = "All Messages Ratings";
+                    container.appendChild(heading);
+                    const ol=document.createElement('ol');
+                    container.appendChild(ol);
+                    res.forEach(item => {
+                        const li = document.createElement('li');
+                        const {message, friendlyname, rating} = item;
+                        li.appendChild(document.createTextNode(message + " => " + friendlyname + " Stars:" + rating));
+                        ol.appendChild(li);
+                });
+            });
+        });
+
         const buttongetAllMessages = document.querySelector('.getting-messages-form');
         buttongetAllMessages.addEventListener('submit', event => {
             event.preventDefault();
@@ -139,7 +226,7 @@
                     container.appendChild(ol);
                     res.forEach(item => {
                         const li = document.createElement('li');
-                        const { message, friendlyname, date} = item;
+                        const {message, friendlyname, date} = item;
                         li.appendChild(document.createTextNode(message + " " + friendlyname + " " + date));
                         ol.appendChild(li);
                 });
@@ -297,7 +384,24 @@
         .then(res => document.getElementById('show-specific-message-deleted').innerText=JSON.stringify(res.ok))
         .catch((err) => console.log("error goes here", err));
     });
-  
+
+    const InsertRating = document.getElementById('rating-message-form');
+    InsertRating.addEventListener('submit', event => {
+        const userid = document.getElementById('userrating').value;
+        const messageid = document.getElementById('ratedmessage').value;
+        const rating = document.getElementById('rategiven').value;
+        event.preventDefault();
+        let body = JSON.stringify({userid, messageid, rating});
+        fetch("/api/add-message-rating", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            credentials: 'same-origin'
+        }).then(res => res.json())
+        .then(res => document.getElementById('show-message-rating').innerText=JSON.stringify(res.ok))
+        .catch((err) => console.log("error goes here", err));
+    });
+
     /*const formUpdateTime = document.getElementById("update-user-time-form");
     formUpdateTime.addEventListener('submit', event => {
             const userid = document.getElementById('userid').value;

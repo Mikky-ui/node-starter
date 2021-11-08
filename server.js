@@ -9,6 +9,14 @@ app.get('/', function(req, res) {
     res.sendFile("index.html", { root: __dirname })
 });
 
+app.get('/api/spec-messages-ratings', function(req,res) {
+    query.getSpecMessagesRatings(db, req, res);
+});
+
+app.get('/api/messages-ratings', function(req, res) {
+    query.getAllMessagesRatings(db, req, res);
+});
+
 app.get('/api/messages', function(req, res) {
     query.getAllMessages(db, req, res);
 });
@@ -54,6 +62,11 @@ app.put('/api/update-time', function(req,res) {
 
 app.delete('/api/delete-specific-messages', function(req, res) {
     query.deleteSpecificMessage(db,req,res);
+});
+
+app.post('/api/add-message-rating', function(req,res) {
+    console.log("This is the req",req.body);
+    query.addMessageRating(db,req,res);
 });
 
 app.listen(3000, function () {

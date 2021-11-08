@@ -2,6 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 let { insertUsers } = require('./sql/insertUsers');
 let { createUsers } = require('./sql/createUsers');
 let { createIndex } = require('./sql/createIndex');
+let { createRatings } = require('./sql/createRatings');
 let { createMessages } = require('./sql/createMessages');
 let { insertMessages } = require('./sql/insertMessages');
 let { insertMessageBFranklin } = require('./sql/insertMessageBFranklin');
@@ -43,6 +44,9 @@ function init(db) {
       db.run(insertMessageBFranklin, (err) => {
         if (err) { console.log(err) } else { console.log("Inserting some messages") }
       });
+      db.run(createRatings, (err) => {
+        if (err) { console.log(err) } else { console.log("Creating Ratings")}
+      })
   });
 }
 
